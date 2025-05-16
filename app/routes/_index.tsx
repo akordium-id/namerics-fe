@@ -1,54 +1,56 @@
+import { useState } from "react";
 import type { MetaFunction } from "@remix-run/node";
+import UsernameForm from "~/components/UsernameForm";
+import UsernameList from "~/components/UsernameList";
+import { generateUsernames } from "~/utils/usernameGenerator";
+import type { UsernameOptions } from "~/components/UsernameForm";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Namerics - Username Generator" },
+    { name: "description", content: "Generate unique and creative usernames" },
   ];
 };
 
 export default function Index() {
+  const [usernames, setUsernames] = useState<string[]>([]);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const handleGenerate = (options: UsernameOptions) => {
+    const generatedUsernames = generateUsernames(options);
+    setUsernames(generatedUsernames);
+    setCopied(null);
+  };
+
+  const handleSelect = (username: string) => {
+    navigator.clipboard.writeText(username)
+      .then(() => {
+        setCopied(username);
+        setTimeout(() => setCopied(null), 2000);
+      })
+      .catch(err => {
+        console.error('Failed to copy username: ', err);
+      });
+  };
+
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-16">
-        <header className="flex flex-col items-center gap-9">
-          <h1 className="leading text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Welcome to <span className="sr-only">Remix</span>
-          </h1>
-          <div className="h-[144px] w-[434px]">
-            <img
-              src="/logo-light.png"
-              alt="Remix"
-              className="block w-full dark:hidden"
-            />
-            <img
-              src="/logo-dark.png"
-              alt="Remix"
-              className="hidden w-full dark:block"
-            />
+    <div className="container">
+      <header className="header">
+        <h1>Namerics</h1>
+        <p>Generate unique and creative usernames for your online presence</p>
+        {copied && (
+          <div className="alert alert-success">
+            Copied "{copied}" to clipboard!
           </div>
-        </header>
-        <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-          <p className="leading-6 text-gray-700 dark:text-gray-200">
-            What&apos;s next?
-          </p>
-          <ul>
-            {resources.map(({ href, text, icon }) => (
-              <li key={href}>
-                <a
-                  className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {icon}
-                  {text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+        )}
+      </header>
+
+      <UsernameForm onGenerate={handleGenerate} />
+      
+      <UsernameList 
+        usernames={usernames} 
+        onSelect={handleSelect} 
+      />
     </div>
   );
 }
