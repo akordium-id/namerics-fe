@@ -16,10 +16,34 @@ export default function Navigation() {
           </li>
           <li>
             <NavLink 
-              to="/about" 
+              to="/features" 
               className={({ isActive }) => isActive ? "active" : ""}
             >
-              About
+              Features
+            </NavLink>
+          </li>
+          <li>
+            <NavLink 
+              to="/pricing" 
+              className={({ isActive }) => isActive ? "active" : ""}
+            >
+              Pricing
+            </NavLink>
+          </li>
+          <li>
+            <NavLink 
+              to="/faq" 
+              className={({ isActive }) => isActive ? "active" : ""}
+            >
+              FAQ
+            </NavLink>
+          </li>
+          <li>
+            <NavLink 
+              to="/dashboard" 
+              className={({ isActive }) => isActive ? "active" : ""}
+            >
+              Dashboard
             </NavLink>
           </li>
         </ul>
